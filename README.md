@@ -16,9 +16,9 @@ and the Flutter guide for
   <a href="https://pub.dev/packages/easy_image_editor">
     <img src="https://img.shields.io/pub/v/easy_image_editor?color=blue" alt="pub.dev version">
   </a>
-  <a href="https://github.com/rajeshbdabhi/easy_image_editor/actions">
-    <img src="https://github.com/rajeshbdabhi/easy_image_editor/workflows/build/badge.svg" alt="GitHub Build Badge">
-  </a>
+  <a href="https://pub.dev/packages/photo_editor_sdk">
+      <img src="https://img.shields.io/badge/platforms-android%20%7C%20ios%20%7C%20windows%20%7C%20linux%20%7C%20macos%20%7C%20web-lightgrey.svg" alt="Platform support">
+    </a>
   <a href="https://opensource.org/licenses/MIT">
     <img src="https://img.shields.io/badge/license-MIT-purple.svg" alt="MIT License Badge">
   </a>
