@@ -16,14 +16,19 @@ and the Flutter guide for
   <a href="https://pub.dev/packages/easy_image_editor">
     <img src="https://img.shields.io/pub/v/easy_image_editor?color=blue" alt="pub.dev version">
   </a>
-  <a href="https://pub.dev/packages/easy_image_editor">
-    <img src="https://img.shields.io/badge/platforms-android%20|%20ios-lightgrey.svg" alt="Platform support">
+  <a href="https://github.com/EdsonBueno/focus_detector/actions">
+    <img src="https://github.com/EdsonBueno/focus_detector/workflows/build/badge.svg" alt="GitHub Build Badge">
+  </a>
+  <a href="https://opensource.org/licenses/MIT">
+    <img src="https://img.shields.io/badge/license-MIT-purple.svg" alt="MIT License Badge">
+  </a>
+  <a href="https://github.com/EdsonBueno/focus_detector">
+    <img src="https://img.shields.io/badge/platform-flutter-ff69b4.svg" alt="Flutter Platform Badge">
   </a>
 </p>
 `EasyImageEditor` use for add any kind of widget over the background image or color and move that widget, resize, rotate.
 
 <p align="center">
-    <img src="https://github.com/rajeshbdabhi/easy_image_editor/blob/master/assets/Screenshot_1.jpg" alt="screenshot">
     <img src="https://github.com/rajeshbdabhi/easy_image_editor/blob/master/assets/Record_1.gif" alt="screenshot">
 </p>
 
