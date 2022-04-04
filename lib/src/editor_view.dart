@@ -1,18 +1,7 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:screenshot/screenshot.dart';
+import 'dart:typed_data';
 import 'resizable_widget.dart';
-
-class EditorProControl {
-  late GlobalKey _containerKey;
-
-  EditorProControl() {
-    _containerKey = GlobalKey();
-  }
-
-  void addView() {}
-}
 
 class EditorView extends StatefulWidget {
   EditorView({
