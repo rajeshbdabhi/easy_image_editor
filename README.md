@@ -12,8 +12,17 @@ and the Flutter guide for
 -->
 
 # Easy Image Editor
-
+<p align="center">
+  <a href="https://pub.dev/packages/easy_image_editor">
+    <img src="https://img.shields.io/pub/v/easy_image_editor?color=blue" alt="pub.dev version">
+  </a>
+  <a href="https://pub.dev/packages/easy_image_editor">
+    <img src="https://img.shields.io/badge/platforms-android%20|%20ios-lightgrey.svg" alt="Platform support">
+  </a>
+</p>
 `EasyImageEditor` use for add any kind of widget over the background image or color and move that widget, resize, rotate.
+
+
 
 ## Features
 
