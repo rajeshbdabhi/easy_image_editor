@@ -1,7 +1,8 @@
 name: easy_image_editor
 description: Easy Image Editor is usefull for add any widget and move, resize and set over the main image or color
+repository: https://github.com/rajeshbdabhi/easy_image_editor
+homepage: https://github.com/rajeshbdabhi/easy_image_editor
 version: 0.0.1
-homepage:
 
 environment:
   sdk: ">=2.12.0 <3.0.0"

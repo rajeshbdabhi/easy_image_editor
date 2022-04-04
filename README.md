@@ -20,16 +20,15 @@ and the Flutter guide for
 1) change editor background color.
 2) add any widget as background in editor.
 3) add any widget over the editor.
-4) move added widget.
-5) resize and rotate added widget.
-6) update added widget with another widget.
-7) allow undo and redo.
-8) allow single and multiple selection.
-9) allow change border color and remove icon.
+4) move, resize and rotate added widget.
+5) update added widget with another widget.
+6) allow undo and redo.
+7) allow single and multiple selection.
+8) allow change border color and remove icon.
 
 ## Getting started
 
-First, add `image_picker` as a [dependency in your pubspec.yaml file](https://flutter.dev/docs/development/platform-integration/platform-channels).
+First, add `easy_image_editor` as a [dependency in your pubspec.yaml file](https://flutter.dev/docs/development/platform-integration/platform-channels).
 then add this line in your file `import 'package:easy_image_editor/easy_image_editor.dart';`
 
 ## Usage
