@@ -22,7 +22,10 @@ and the Flutter guide for
 </p>
 `EasyImageEditor` use for add any kind of widget over the background image or color and move that widget, resize, rotate.
 
-
+<p align="center">
+    <img src="https://github.com/rajeshbdabhi/easy_image_editor/blob/master/assets/Screenshot_1.jpg" alt="screenshot">
+    <img src="https://github.com/rajeshbdabhi/easy_image_editor/blob/master/assets/Record_1.gif" alt="screenshot">
+</p>
 
 ## Features
 
