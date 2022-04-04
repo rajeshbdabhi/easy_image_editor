@@ -25,6 +25,7 @@ and the Flutter guide for
 6) allow undo and redo.
 7) allow single and multiple selection.
 8) allow change border color and remove icon.
+9) remove added widget.
 
 ## Getting started
 
