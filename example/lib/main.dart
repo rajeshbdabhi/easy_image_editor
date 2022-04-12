@@ -77,19 +77,20 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     editorView = EditorView(
       borderColor: Colors.red,
+      clickToFocusAndMove: true,
       removeIcon: const Icon(
         Icons.cancel_outlined,
         size: 20.0,
       ),
       onViewTouchOver: (position, widget, widgetType) {
         debugPrint("onViewTouch: $position, $widgetType");
+      },
+      onClick: (position, widget, widgetType) {
+        debugPrint("onViewClick");
         if (widgetType == "text") {
           Text _text = widget as Text;
           _addText(position, _text);
         }
-      },
-      onClick: (position, widget, widgetType) {
-        debugPrint("onViewClick");
       },
     );
     editorView.canEditMultipleView(true);

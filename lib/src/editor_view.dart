@@ -109,8 +109,6 @@ class _EditorViewState extends State<EditorView> {
   Color? _backgroundColor;
   Widget? _backgroundWidget;
 
-  int _lastClickPosition = -1;
-
   Future<Uint8List?> _saveView() async {
     _disableEditMode();
     return await _screenshotController.capture();
@@ -180,7 +178,7 @@ class _EditorViewState extends State<EditorView> {
   void _updateView(int position, Widget view) {
     assert(position >= 0 &&
         _widgetList.isNotEmpty &&
-        _widgetList.length <= position);
+        _widgetList.length - 1 <= position);
     setState(() {
       debugPrint("viewUpdated");
       _widgetList[position].resizableWidget = view;
@@ -340,6 +338,10 @@ class _EditorViewState extends State<EditorView> {
   }
 
   void _flipView(int position, bool isHorizontal) {
+    assert(position >= 0 &&
+        _widgetList.isNotEmpty &&
+        _widgetList.length - 1 <= position);
+
     setState(() {
       final view = _widgetList[position];
       var myTransform = Matrix4Transform.from(view.matrix4!);
@@ -356,7 +358,7 @@ class _EditorViewState extends State<EditorView> {
   void _updateMatrix(int position, Matrix4 matrix) {
     assert(position >= 0 &&
         _widgetList.isNotEmpty &&
-        _widgetList.length <= position);
+        _widgetList.length - 1 <= position);
     setState(() {
       _widgetList[position].updateMatrix(matrix);
     });
@@ -365,7 +367,7 @@ class _EditorViewState extends State<EditorView> {
   void _zoomInOut(int position, double value) {
     assert(position >= 0 &&
         _widgetList.isNotEmpty &&
-        _widgetList.length <= position);
+        _widgetList.length - 1 <= position);
     setState(() {
       final view = _widgetList[position];
       var myTransform = Matrix4Transform.from(view.matrix4!);
@@ -376,7 +378,7 @@ class _EditorViewState extends State<EditorView> {
   void _rotateView(int position, double rotateDegree) {
     assert(position >= 0 &&
         _widgetList.isNotEmpty &&
-        _widgetList.length <= position);
+        _widgetList.length - 1 <= position);
     setState(() {
       final view = _widgetList[position];
       var myTransform = Matrix4Transform.from(view.matrix4!);
@@ -390,7 +392,7 @@ class _EditorViewState extends State<EditorView> {
   void _moveView(int position, MoveType moveType, double value) {
     assert(position >= 0 &&
         _widgetList.isNotEmpty &&
-        _widgetList.length <= position);
+        _widgetList.length - 1 <= position);
 
     setState(() {
       final view = _widgetList[position];

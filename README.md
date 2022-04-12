@@ -26,7 +26,7 @@ and the Flutter guide for
     <img src="https://img.shields.io/badge/platform-flutter-ff69b4.svg" alt="Flutter Platform Badge">
   </a>
 </p>
-`EasyImageEditor` use for add any kind of widget over the background image or color and move that widget, resize, rotate.
+<b>EasyImageEditor</b> use for add any kind of widget over the background image or color and move that widget, resize, rotate.
 
 <p align="center">
     <img src="https://github.com/rajeshbdabhi/easy_image_editor/blob/master/assets/Record_1.gif" alt="screenshot">
@@ -91,3 +91,10 @@ for more detail and usage see /example/lib/main.dart
 9) `canEditMultipleView` set edit selection mode multiple or single default value `true`.
 10) `hideViewControl` it will hide borders and remove icons of all added widget.
 11) `showViewControl` it will show borders and remove icons of all added widget.
+12) `onClick` this event call when widget click.
+13) `clickToFocusAndMove` if you set true then any widget move, rotate, zoom by touch when user click's on default value `false`.
+14) `moveView` move widget over the editor programmatically.
+15) `rotateView` rotate widget over the editor programmatically.
+16) `zoomInOutView` zoom in or out widget over the editor programmatically.
+17) `flipView` flip vertical or horizontal widget over the editor programmatically.
+18) `updateMatrix` update widget matrix over the editor programmatically like your way.
