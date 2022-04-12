@@ -396,18 +396,16 @@ class _EditorViewState extends State<EditorView> {
 
     setState(() {
       final view = _widgetList[position];
-      final matrix = view.matrix4!;
+      var myTransform = Matrix4Transform.from(view.matrix4!);
       if (moveType == MoveType.right) {
-        matrix.setTranslationRaw(view.getX() + value, view.getY(), 0);
+        _widgetList[position].updateMatrix(myTransform.right(value).matrix4);
       } else if (moveType == MoveType.bottom) {
-        matrix.setTranslationRaw(view.getX(), view.getY() + value, 0);
+        _widgetList[position].updateMatrix(myTransform.down(value).matrix4);
       } else if (moveType == MoveType.top) {
-        matrix.setTranslationRaw(view.getX(), view.getY() - value, 0);
+        _widgetList[position].updateMatrix(myTransform.up(value).matrix4);
       } else if (moveType == MoveType.left) {
-        matrix.setTranslationRaw(view.getX() - value, view.getY(), 0);
+        _widgetList[position].updateMatrix(myTransform.left(value).matrix4);
       }
-
-      _widgetList[position].updateMatrix(matrix);
     });
   }
 
