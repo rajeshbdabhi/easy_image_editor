@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:matrix4_transform/matrix4_transform.dart';
 import 'package:screenshot/screenshot.dart';
 import 'dart:typed_data';
 import 'resizable_widget.dart';
@@ -18,6 +19,7 @@ class EditorView extends StatefulWidget {
   final _editorViewState = _EditorViewState();
 
   @override
+  // ignore: no_logic_in_create_state
   _EditorViewState createState() => _editorViewState;
 
   /// save all edited views and his position and return Uint8List data.
@@ -64,13 +66,36 @@ class EditorView extends StatefulWidget {
 
   /// set remove icon
   final Icon removeIcon;
+
+  /// move view by provide position and move type like left, right and his his value.
+  /// Ex. position = 0, moveType = MoveType.left, value = 10
+  void moveView(int position, MoveType moveType, double value) =>
+      _editorViewState._moveView(position, moveType, value);
+
+  /// rotate particular view
+  void rotateView(int position, double rotateDegree) =>
+      _editorViewState._rotateView(position, rotateDegree);
+
+  /// zoom In and Out view
+  /// for zoom view value > 1
+  /// for zoom out view value < 0 like (0.1)
+  void zoomInOutView(int position, double value) =>
+      _editorViewState._zoomInOut(position, value);
+
+  /// update matrix of particular view
+  void updateMatrix(int position, Matrix4 matrix4) =>
+      _editorViewState._updateMatrix(position, matrix4);
+
+  /// flip particular view
+  void flipView(int position, bool isHorizontal) =>
+      _editorViewState._flipView(position, isHorizontal);
 }
 
 class _EditorViewState extends State<EditorView> {
-  ScreenshotController _screenshotController = ScreenshotController();
+  final ScreenshotController _screenshotController = ScreenshotController();
 
-  final List<RedoUndoModel> _widgetListRedoUndo = [];
   final List<ResizableWidget> _widgetList = [];
+  final List<ResizableWidget> widgetList = [];
 
   bool isSingleMove = false;
 
@@ -144,6 +169,9 @@ class _EditorViewState extends State<EditorView> {
   }
 
   void _updateView(int position, Widget view) {
+    assert(position >= 0 &&
+        _widgetList.isNotEmpty &&
+        _widgetList.length <= position);
     setState(() {
       debugPrint("viewUpdated");
       _widgetList[position].resizableWidget = view;
@@ -227,11 +255,6 @@ class _EditorViewState extends State<EditorView> {
         });
       },
       onTouchOver: (key, position, matrix) {
-        final finalIndex = _widgetListRedoUndo
-            .indexWhere((element) => element.widget.key == key);
-
-        _widgetListRedoUndo[finalIndex].matrix = matrix;
-
         if (widget.onViewTouchOver != null) {
           final touchView =
               _widgetList.firstWhere((element) => element.key == key);
@@ -240,14 +263,6 @@ class _EditorViewState extends State<EditorView> {
         }
       },
     );
-    /*if (matrix4 != null) {
-      resizableView.updateMatrix(matrix4);
-    } else {
-      _widgetListRedoUndo
-          .add(RedoUndoModel(widget: resizableView, matrix: matrix4));
-    }*/
-    _widgetListRedoUndo
-        .add(RedoUndoModel(widget: resizableView, matrix: matrix4));
 
     _widgetList.add(resizableView);
   }
@@ -278,6 +293,76 @@ class _EditorViewState extends State<EditorView> {
     }
   }
 
+  void _flipView(int position, bool isHorizontal) {
+    setState(() {
+      final view = _widgetList[position];
+      var myTransform = Matrix4Transform.from(view.matrix4!);
+      if (isHorizontal) {
+        _widgetList[position]
+            .updateMatrix(myTransform.flipHorizontally().matrix4);
+      } else {
+        _widgetList[position]
+            .updateMatrix(myTransform.flipVertically().matrix4);
+      }
+    });
+  }
+
+  void _updateMatrix(int position, Matrix4 matrix) {
+    assert(position >= 0 &&
+        _widgetList.isNotEmpty &&
+        _widgetList.length <= position);
+    setState(() {
+      _widgetList[position].updateMatrix(matrix);
+    });
+  }
+
+  void _zoomInOut(int position, double value) {
+    assert(position >= 0 &&
+        _widgetList.isNotEmpty &&
+        _widgetList.length <= position);
+    setState(() {
+      final view = _widgetList[position];
+      var myTransform = Matrix4Transform.from(view.matrix4!);
+      _widgetList[position].updateMatrix(myTransform.scale(value).matrix4);
+    });
+  }
+
+  void _rotateView(int position, double rotateDegree) {
+    assert(position >= 0 &&
+        _widgetList.isNotEmpty &&
+        _widgetList.length <= position);
+    setState(() {
+      final view = _widgetList[position];
+      var myTransform = Matrix4Transform.from(view.matrix4!);
+      _widgetList[position].updateMatrix(myTransform
+          .rotateByCenterDegrees(
+              rotateDegree, Size(view.getWidth(), view.getHeight()))
+          .matrix4);
+    });
+  }
+
+  void _moveView(int position, MoveType moveType, double value) {
+    assert(position >= 0 &&
+        _widgetList.isNotEmpty &&
+        _widgetList.length <= position);
+
+    setState(() {
+      final view = _widgetList[position];
+      final matrix = view.matrix4!;
+      if (moveType == MoveType.right) {
+        matrix.setTranslationRaw(view.getX() + value, view.getY(), 0);
+      } else if (moveType == MoveType.bottom) {
+        matrix.setTranslationRaw(view.getX(), view.getY() + value, 0);
+      } else if (moveType == MoveType.top) {
+        matrix.setTranslationRaw(view.getX(), view.getY() - value, 0);
+      } else if (moveType == MoveType.left) {
+        matrix.setTranslationRaw(view.getX() - value, view.getY(), 0);
+      }
+
+      _widgetList[position].updateMatrix(matrix);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Screenshot(
@@ -306,9 +391,9 @@ class _EditorViewState extends State<EditorView> {
   }
 }
 
-class RedoUndoModel {
-  ResizableWidget widget;
-  Matrix4? matrix;
-
-  RedoUndoModel({required this.widget, required this.matrix});
+enum MoveType {
+  left,
+  right,
+  top,
+  bottom,
 }

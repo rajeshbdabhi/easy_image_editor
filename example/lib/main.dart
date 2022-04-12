@@ -89,7 +89,6 @@ class _MyHomePageState extends State<MyHomePage> {
         }
       },
     );
-
     editorView.canEditMultipleView(true);
   }
 
@@ -301,7 +300,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     editorView.addBackgroundView(Image.file(File(image.path)));
                   }
                 },
-                child: Padding(
+                child: const Padding(
                   padding: EdgeInsets.all(20),
                   child: Text(
                     "Set Background",
@@ -324,7 +323,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         widgetType: "image");
                   }
                 },
-                child: Padding(
+                child: const Padding(
                   padding: EdgeInsets.all(20),
                   child: Text(
                     "Add View",

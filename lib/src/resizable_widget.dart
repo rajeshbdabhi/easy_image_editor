@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'matrix_gesture_detector.dart';
 import 'dart:async';
+import 'dart:math' as math;
 
+// ignore: must_be_immutable
 class ResizableWidget extends StatefulWidget {
   ResizableWidget({
     key,
@@ -13,7 +15,10 @@ class ResizableWidget extends StatefulWidget {
     this.widgetType,
     this.matrix4,
     this.isVisible = true,
-    this.removeIcon = const Icon(Icons.close,size: 20.0,),
+    this.removeIcon = const Icon(
+      Icons.close,
+      size: 20.0,
+    ),
     required this.onRemoveClick,
     required this.onSetTop,
     required this.onTouchOver,
@@ -41,14 +46,26 @@ class ResizableWidget extends StatefulWidget {
   final resizableWidgetState = _ResizableWidgetState();
 
   @override
+  // ignore: no_logic_in_create_state
   _ResizableWidgetState createState() => resizableWidgetState;
 
   void updateMatrix(Matrix4 matrix4) =>
       resizableWidgetState._setMatrix(matrix4);
 
   void updateView() {
+    // ignore: invalid_use_of_protected_member
     resizableWidgetState.setState(() {});
   }
+
+  double getX() => resizableWidgetState._getX();
+
+  double getY() => resizableWidgetState._getY();
+
+  double getAngle() => resizableWidgetState._getAngle();
+
+  double getHeight() => resizableWidgetState._getHeight();
+
+  double getWidth() => resizableWidgetState._getWidth();
 }
 
 class _ResizableWidgetState extends State<ResizableWidget> {
@@ -61,6 +78,7 @@ class _ResizableWidgetState extends State<ResizableWidget> {
   Timer? _timer;
 
   void _setMatrix(Matrix4 matrix4) {
+    widget.matrix4 = matrix4;
     if (mounted) {
       setState(() {
         matrix = matrix4;
@@ -68,6 +86,34 @@ class _ResizableWidgetState extends State<ResizableWidget> {
     } else {
       matrix = matrix4;
     }
+  }
+
+  double _getX() {
+    RenderBox box = key.currentContext?.findRenderObject() as RenderBox;
+    Offset position = box.localToGlobal(Offset.zero);
+    return position.dx;
+  }
+
+  double _getY() {
+    RenderBox box = key.currentContext?.findRenderObject() as RenderBox;
+    Offset position = box.localToGlobal(Offset.zero);
+    return position.dy - 87.6;
+  }
+
+  double _getAngle() {
+    RenderBox box = key.currentContext?.findRenderObject() as RenderBox;
+    Offset position = box.localToGlobal(Offset.zero);
+    return -math.atan2(position.dy - 87.6, position.dx);
+  }
+
+  double _getWidth() {
+    RenderBox box = key.currentContext?.findRenderObject() as RenderBox;
+    return box.size.width;
+  }
+
+  double _getHeight() {
+    RenderBox box = key.currentContext?.findRenderObject() as RenderBox;
+    return box.size.height;
   }
 
   @override
@@ -86,12 +132,16 @@ class _ResizableWidgetState extends State<ResizableWidget> {
         ? Transform(
             transform: matrix,
             child: Stack(
+              key: key,
               children: [
                 MatrixGestureDetector(
                   onMatrixUpdate:
                       (Matrix4 m, Matrix4 tm, Matrix4 sm, Matrix4 rm) {
                     setState(() {
-                      if (widget.canMove) matrix = m;
+                      if (widget.canMove) {
+                        matrix = m;
+                        widget.matrix4 = m;
+                      }
                       if (!_isTouched) {
                         _isTouched = true;
                         widget.onSetTop(

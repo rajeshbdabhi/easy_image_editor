@@ -7,6 +7,7 @@ class Result extends StatefulWidget {
 
   final Uint8List uint8list;
 
+  @override
   _ResultState createState() => _ResultState();
 }
 
