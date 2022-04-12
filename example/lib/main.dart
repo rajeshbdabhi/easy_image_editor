@@ -88,6 +88,9 @@ class _MyHomePageState extends State<MyHomePage> {
           _addText(position, _text);
         }
       },
+      onClick: (position, widget, widgetType) {
+        debugPrint("onViewClick");
+      },
     );
     editorView.canEditMultipleView(true);
   }

@@ -21,6 +21,7 @@ class ResizableWidget extends StatefulWidget {
     ),
     required this.onRemoveClick,
     required this.onSetTop,
+    required this.onClick,
     required this.onTouchOver,
   }) : super(key: key);
 
@@ -39,6 +40,9 @@ class ResizableWidget extends StatefulWidget {
 
   /// return widget key, position and his type if you added
   final Function(Key, int, String?) onSetTop;
+
+  /// return widget key, position and his type if you added
+  final Function(Key, int, String?) onClick;
 
   /// return widget key, position and his matrix
   final Function(Key, int, Matrix4) onTouchOver;
@@ -166,8 +170,13 @@ class _ResizableWidgetState extends State<ResizableWidget> {
                   focalPointAlignment: Alignment.center,
                   matrix4Old: matrix,
                   child: InkWell(
-                    onTap: () => widget.onSetTop(
-                        widget.key!, widget.position, widget.widgetType),
+                    onTap: () {
+                      debugPrint("click Top");
+                      widget.onClick(
+                          widget.key!, widget.position, widget.widgetType);
+                      widget.onSetTop(
+                          widget.key!, widget.position, widget.widgetType);
+                    },
                     child: Container(
                       padding: const EdgeInsets.all(10.0),
                       decoration: BoxDecoration(

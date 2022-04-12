@@ -9,6 +9,8 @@ class EditorView extends StatefulWidget {
     key,
     this.onViewTouch,
     this.onViewTouchOver,
+    this.onClick,
+    this.clickToFocusAndMove = false,
     this.borderColor = Colors.black,
     this.removeIcon = const Icon(
       Icons.cancel,
@@ -61,11 +63,16 @@ class EditorView extends StatefulWidget {
   /// this event fire every time when user remove touch from view.
   final Function(int, Widget, String?)? onViewTouchOver;
 
+  /// this event fire every time when user click view.
+  final Function(int, Widget, String?)? onClick;
+
   /// set border color of widget
   final Color borderColor;
 
   /// set remove icon
   final Icon removeIcon;
+
+  final bool clickToFocusAndMove;
 
   /// move view by provide position and move type like left, right and his his value.
   /// Ex. position = 0, moveType = MoveType.left, value = 10
@@ -101,6 +108,8 @@ class _EditorViewState extends State<EditorView> {
 
   Color? _backgroundColor;
   Widget? _backgroundWidget;
+
+  int _lastClickPosition = -1;
 
   Future<Uint8List?> _saveView() async {
     _disableEditMode();
@@ -218,41 +227,78 @@ class _EditorViewState extends State<EditorView> {
           } catch (_) {}
         });
       },
-      onSetTop: (key, index, widgetType) {
-        setState(() {
+      onClick: (key, index, widgetType) {
+        if (widget.clickToFocusAndMove) {
+          setState(() {
+            final finalIndex =
+                _widgetList.indexWhere((element) => element.key == key);
+
+            final touchView = _widgetList.removeAt(finalIndex);
+            touchView.showRemoveIcon = true;
+            touchView.canMove = true;
+            touchView.borderColor = widget.borderColor;
+            touchView.updateView();
+            _widgetList.add(touchView);
+
+            if (widget.onClick != null) {
+              widget.onClick!(_widgetList.length - 1, touchView.resizableWidget,
+                  touchView.widgetType);
+            }
+
+            if (isSingleMove) {
+              for (var element in _widgetList) {
+                if (element != touchView) {
+                  element.showRemoveIcon = false;
+                  element.borderColor = Colors.transparent;
+                  element.canMove = false;
+                  element.updateView();
+                }
+              }
+            }
+          });
+        } else {
           final finalIndex =
               _widgetList.indexWhere((element) => element.key == key);
 
-          final touchView = _widgetList.removeAt(finalIndex);
-          touchView.showRemoveIcon = true;
-          touchView.canMove = true;
-          touchView.borderColor = widget.borderColor;
-          touchView.updateView();
-          _widgetList.add(touchView);
+          final touchView = _widgetList[finalIndex];
 
-          if (widget.onViewTouch != null) {
-            widget.onViewTouch!(_widgetList.length - 1,
-                touchView.resizableWidget, touchView.widgetType);
+          if (widget.onClick != null) {
+            widget.onClick!(_widgetList.length - 1, touchView.resizableWidget,
+                touchView.widgetType);
           }
+        }
+      },
+      onSetTop: (key, index, widgetType) {
+        debugPrint("onTouch");
+        if (!widget.clickToFocusAndMove) {
+          setState(() {
+            final finalIndex =
+                _widgetList.indexWhere((element) => element.key == key);
 
-          /*final finalIndexRedoUndo = _widgetListRedoUndo
-              .indexWhere((element) => element.widget.key == key);
+            final touchView = _widgetList.removeAt(finalIndex);
+            touchView.showRemoveIcon = true;
+            touchView.canMove = true;
+            touchView.borderColor = widget.borderColor;
+            touchView.updateView();
+            _widgetList.add(touchView);
 
-          final touchViewRedoUndo =
-              _widgetListRedoUndo.removeAt(finalIndexRedoUndo);
-          _widgetListRedoUndo.add(touchViewRedoUndo);*/
+            if (widget.onViewTouch != null) {
+              widget.onViewTouch!(_widgetList.length - 1,
+                  touchView.resizableWidget, touchView.widgetType);
+            }
 
-          if (isSingleMove) {
-            for (var element in _widgetList) {
-              if (element != touchView) {
-                element.showRemoveIcon = false;
-                element.borderColor = Colors.transparent;
-                element.canMove = false;
-                element.updateView();
+            if (isSingleMove) {
+              for (var element in _widgetList) {
+                if (element != touchView) {
+                  element.showRemoveIcon = false;
+                  element.borderColor = Colors.transparent;
+                  element.canMove = false;
+                  element.updateView();
+                }
               }
             }
-          }
-        });
+          });
+        }
       },
       onTouchOver: (key, position, matrix) {
         if (widget.onViewTouchOver != null) {
@@ -361,6 +407,14 @@ class _EditorViewState extends State<EditorView> {
 
       _widgetList[position].updateMatrix(matrix);
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.clickToFocusAndMove) {
+      _setSelectionMode(true);
+    }
   }
 
   @override
