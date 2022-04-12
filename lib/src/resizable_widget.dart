@@ -127,6 +127,8 @@ class _ResizableWidgetState extends State<ResizableWidget> {
       setState(() {
         matrix = widget.matrix4!;
       });
+    } else {
+      widget.matrix4 = matrix;
     }
   }
 
