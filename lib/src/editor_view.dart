@@ -382,7 +382,7 @@ class _EditorViewState extends State<EditorView> {
     setState(() {
       final view = _widgetList[position];
       var myTransform = Matrix4Transform.from(view.matrix4!);
-      _widgetList[position].updateMatrix(Matrix4Transform()
+      _widgetList[position].updateMatrix(myTransform
           .rotateByCenterDegrees(
               rotateDegree, Size(view.getWidth(), view.getHeight()))
           .matrix4);
