@@ -37,12 +37,13 @@ and the Flutter guide for
 1) change editor background color.
 2) add any widget as background in editor.
 3) add any widget over the editor.
-4) move, resize and rotate added widget.
+4) move, resize, flip, zoom and rotate added widget.
 5) update added widget with another widget.
 6) allow undo and redo.
 7) allow single and multiple selection.
 8) allow change border color and remove icon.
 9) remove added widget.
+10) handle all action manually
 
 ## Getting started
 
