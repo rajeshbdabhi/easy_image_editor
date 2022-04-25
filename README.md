@@ -56,12 +56,12 @@ then add this line in your file `import 'package:easy_image_editor/easy_image_ed
     import 'package:easy_image_editor/easy_image_editor.dart';
 
     class _MyHomePageState extends State<MyHomePage> {
-        late EditorView editorView;
+        late EasyImageEditorController _easyImageEditorController;
+        ...
 
         @override
         void initState() {
             super.initState();
-            editorView = EditorView();
             ...
         }
         ...
@@ -70,7 +70,13 @@ then add this line in your file `import 'package:easy_image_editor/easy_image_ed
         Widget build(BuildContext context) {
             return Scaffold(
                     ...
-                    body: editorView,
+                    body: EditorView(
+                                onInitialize: (controller) {
+                                  setState(() {
+                                    _easyImageEditorController = controller;
+                                  });
+                                },
+                          ),
                     ...
             );
         }

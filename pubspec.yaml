@@ -2,7 +2,7 @@ name: easy_image_editor
 description: Easy Image Editor is usefull for add any widget and move, resize and set over the main image or color
 repository: https://github.com/rajeshbdabhi/easy_image_editor
 homepage: https://github.com/rajeshbdabhi/easy_image_editor
-version: 1.0.2
+version: 1.0.3
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -18,6 +18,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^1.0.0
+  test: ^1.17.10
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

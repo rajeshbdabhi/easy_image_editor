@@ -52,9 +52,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  late EasyImageEditorController _easyImageEditorController;
   final ImagePicker _picker = ImagePicker();
 
-  late EditorView editorView;
+  //late EditorView editorView;
 
   final List<Color> _colorArray = [
     Colors.red,
@@ -75,25 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    editorView = EditorView(
-      borderColor: Colors.red,
-      clickToFocusAndMove: true,
-      removeIcon: const Icon(
-        Icons.cancel_outlined,
-        size: 20.0,
-      ),
-      onViewTouchOver: (position, widget, widgetType) {
-        debugPrint("onViewTouch: $position, $widgetType");
-      },
-      onClick: (position, widget, widgetType) {
-        debugPrint("onViewClick");
-        if (widgetType == "text") {
-          Text _text = widget as Text;
-          _addText(position, _text);
-        }
-      },
-    );
-    editorView.canEditMultipleView(true);
+    //_easyImageEditorController.canEditMultipleView(true);
   }
 
   @override
@@ -103,24 +86,26 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
         actions: [
           IconButton(
-            onPressed: () => editorView.canEditMultipleView(false),
+            onPressed: () =>
+                _easyImageEditorController.canEditMultipleView(false),
             icon: const Icon(Icons.photo_size_select_large),
           ),
           IconButton(
-            onPressed: () => editorView.canEditMultipleView(true),
+            onPressed: () =>
+                _easyImageEditorController.canEditMultipleView(true),
             icon: const Icon(Icons.select_all),
           ),
           IconButton(
-            onPressed: () => editorView.undo(),
+            onPressed: () => _easyImageEditorController.undo(),
             icon: const Icon(Icons.undo),
           ),
           IconButton(
-            onPressed: () => editorView.redo(),
+            onPressed: () => _easyImageEditorController.redo(),
             icon: const Icon(Icons.redo),
           ),
           IconButton(
             onPressed: () {
-              editorView.saveEditing().then((value) {
+              _easyImageEditorController.saveEditing().then((value) {
                 if (value != null) {
                   Navigator.push(
                       context,
@@ -133,7 +118,29 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      body: editorView,
+      body: EditorView(
+        borderColor: Colors.red,
+        clickToFocusAndMove: false,
+        onInitialize: (controller) {
+          setState(() {
+            _easyImageEditorController = controller;
+          });
+        },
+        removeIcon: const Icon(
+          Icons.cancel_outlined,
+          size: 20.0,
+        ),
+        onViewTouchOver: (position, widget, widgetType) {
+          debugPrint("onViewTouch: $position, $widgetType");
+        },
+        onClick: (position, widget, widgetType) {
+          debugPrint("onViewClick");
+          if (widgetType == "text") {
+            Text _text = widget as Text;
+            _addText(position, _text);
+          }
+        },
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(
@@ -216,7 +223,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       Navigator.pop(context);
 
                       if (text == null) {
-                        editorView.addView(
+                        _easyImageEditorController.addView(
                           Text(
                             textEditController.text,
                             style: TextStyle(
@@ -227,7 +234,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           widgetType: "text",
                         );
                       } else {
-                        editorView.updateView(
+                        _easyImageEditorController.updateView(
                           position!,
                           Text(
                             textEditController.text,
@@ -274,7 +281,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 return InkWell(
                   onTap: () {
                     Navigator.pop(context);
-                    editorView.addBackgroundColor(_colorArray[index]);
+                    _easyImageEditorController
+                        .addBackgroundColor(_colorArray[index]);
                   },
                   child: Container(
                     height: 50.0,
@@ -301,7 +309,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       await _picker.pickImage(source: ImageSource.gallery);
                   if (image != null) {
                     Navigator.pop(context);
-                    editorView.addBackgroundView(Image.file(File(image.path)));
+                    _easyImageEditorController
+                        .addBackgroundView(Image.file(File(image.path)));
                   }
                 },
                 child: const Padding(
@@ -318,7 +327,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       await _picker.pickImage(source: ImageSource.gallery);
                   if (image != null) {
                     Navigator.pop(context);
-                    editorView.addView(
+                    _easyImageEditorController.addView(
                         Image.file(
                           File(image.path),
                           height: 200,

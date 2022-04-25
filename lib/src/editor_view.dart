@@ -4,9 +4,78 @@ import 'package:screenshot/screenshot.dart';
 import 'dart:typed_data';
 import 'resizable_widget.dart';
 
+class EasyImageEditorController {
+  _EditorViewState? _editorViewState;
+
+  void _init(_EditorViewState editorViewState) {
+    _editorViewState = editorViewState;
+  }
+
+  /// This function user for add view in editor
+  void addView(Widget view, {String? widgetType}) =>
+      _editorViewState?._addView(view, widgetType);
+
+  /// update view of given position.
+  void updateView(int position, Widget view) =>
+      _editorViewState?._updateView(position, view);
+
+  /// hide Border and Remove button from all views
+  void hideViewControl() => _editorViewState?._disableEditMode();
+
+  /// show Border and Remove button in all views
+  void showViewControl() => _editorViewState?._enableEditModel();
+
+  /// allow editor to move, zoom and rotate multiple views. if you set true than only one view can move, zoom and rotate default value is true.
+  void canEditMultipleView(bool isMultipleSelection) =>
+      _editorViewState?._setSelectionMode(!isMultipleSelection);
+
+  /// set editor background view it will overlap background color.
+  void addBackgroundView(Widget? view) => _editorViewState?._addBGView(view);
+
+  /// set editor background color.
+  void addBackgroundColor(Color color) => _editorViewState?._addBGColor(color);
+
+  /// redo your changes
+  void redo() => _editorViewState?._redo();
+
+  /// undo your changes
+  void undo() => _editorViewState?._undo();
+
+  /// move view by provide position and move type like left, right and his his value.
+  /// Ex. position = 0, moveType = MoveType.left, value = 10
+  void moveView(int position, MoveType moveType, double value) =>
+      _editorViewState?._moveView(position, moveType, value);
+
+  /// rotate particular view
+  void rotateView(int position, double rotateDegree) =>
+      _editorViewState?._rotateView(position, rotateDegree);
+
+  /// zoom In and Out view
+  /// for zoom view value > 1
+  /// for zoom out view value < 0 like (0.1)
+  void zoomInOutView(int position, double value) =>
+      _editorViewState?._zoomInOut(position, value);
+
+  /// update matrix of particular view
+  void updateMatrix(int position, Matrix4 matrix4) =>
+      _editorViewState?._updateMatrix(position, matrix4);
+
+  /// flip particular view
+  void flipView(int position, bool isHorizontal) =>
+      _editorViewState?._flipView(position, isHorizontal);
+
+  /// save all edited views and his position and return Uint8List data.
+  Future<Uint8List?> saveEditing() {
+    assert(_editorViewState != null);
+
+    return _editorViewState!._saveView();
+  }
+}
+
 class EditorView extends StatefulWidget {
-  EditorView({
+  const EditorView({
     key,
+    required this.onInitialize,
     this.onViewTouch,
     this.onViewTouchOver,
     this.onClick,
@@ -18,44 +87,10 @@ class EditorView extends StatefulWidget {
     ),
   }) : super(key: key);
 
-  final _editorViewState = _EditorViewState();
-
   @override
-  // ignore: no_logic_in_create_state
-  _EditorViewState createState() => _editorViewState;
+  _EditorViewState createState() => _EditorViewState();
 
-  /// save all edited views and his position and return Uint8List data.
-  Future<Uint8List?> saveEditing() => _editorViewState._saveView();
-
-  /// This function user for add view in editor
-  void addView(Widget view, {String? widgetType}) =>
-      _editorViewState._addView(view, widgetType);
-
-  /// update view of given position.
-  void updateView(int position, Widget view) =>
-      _editorViewState._updateView(position, view);
-
-  /// hide Border and Remove button from all views
-  void hideViewControl() => _editorViewState._disableEditMode();
-
-  /// show Border and Remove button in all views
-  void showViewControl() => _editorViewState._enableEditModel();
-
-  /// allow editor to move, zoom and rotate multiple views. if you set true than only one view can move, zoom and rotate default value is true.
-  void canEditMultipleView(bool isMultipleSelection) =>
-      _editorViewState._setSelectionMode(!isMultipleSelection);
-
-  /// set editor background view it will overlap background color.
-  void addBackgroundView(Widget? view) => _editorViewState._addBGView(view);
-
-  /// set editor background color.
-  void addBackgroundColor(Color color) => _editorViewState._addBGColor(color);
-
-  /// redo your changes
-  void redo() => _editorViewState._redo();
-
-  /// undo your changes
-  void undo() => _editorViewState._undo();
+  final Function(EasyImageEditorController) onInitialize;
 
   /// this event fire every time you touch view.
   final Function(int, Widget, String?)? onViewTouch;
@@ -73,29 +108,6 @@ class EditorView extends StatefulWidget {
   final Icon removeIcon;
 
   final bool clickToFocusAndMove;
-
-  /// move view by provide position and move type like left, right and his his value.
-  /// Ex. position = 0, moveType = MoveType.left, value = 10
-  void moveView(int position, MoveType moveType, double value) =>
-      _editorViewState._moveView(position, moveType, value);
-
-  /// rotate particular view
-  void rotateView(int position, double rotateDegree) =>
-      _editorViewState._rotateView(position, rotateDegree);
-
-  /// zoom In and Out view
-  /// for zoom view value > 1
-  /// for zoom out view value < 0 like (0.1)
-  void zoomInOutView(int position, double value) =>
-      _editorViewState._zoomInOut(position, value);
-
-  /// update matrix of particular view
-  void updateMatrix(int position, Matrix4 matrix4) =>
-      _editorViewState._updateMatrix(position, matrix4);
-
-  /// flip particular view
-  void flipView(int position, bool isHorizontal) =>
-      _editorViewState._flipView(position, isHorizontal);
 }
 
 class _EditorViewState extends State<EditorView> {
@@ -155,6 +167,7 @@ class _EditorViewState extends State<EditorView> {
       setState(() {
         for (var element in _widgetList) {
           element.showRemoveIcon = false;
+          element.canMove = false;
           element.borderColor = Colors.transparent;
           element.updateView();
         }
@@ -168,6 +181,7 @@ class _EditorViewState extends State<EditorView> {
       setState(() {
         for (var element in _widgetList) {
           element.showRemoveIcon = true;
+          element.canMove = true;
           element.borderColor = widget.borderColor;
           element.updateView();
         }
@@ -412,6 +426,14 @@ class _EditorViewState extends State<EditorView> {
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      EasyImageEditorController easyImageEditorController =
+          EasyImageEditorController();
+      easyImageEditorController._init(this);
+      widget.onInitialize(easyImageEditorController);
+    });
+
     if (widget.clickToFocusAndMove) {
       _setSelectionMode(true);
     }

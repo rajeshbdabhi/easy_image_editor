@@ -1,3 +1,8 @@
+## 1.0.3
+* fix bug
+* added EasyImageEditorController to perform operations
+* update example app
+
 ## 1.0.2
 * fix bug
 * now editor allow handle all actions manually like move, rotate, zoom, flip
