@@ -427,7 +427,7 @@ class _EditorViewState extends State<EditorView> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       EasyImageEditorController easyImageEditorController =
           EasyImageEditorController();
       easyImageEditorController._init(this);
