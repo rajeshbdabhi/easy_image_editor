@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:easy_image_editor/easy_image_editor.dart';
@@ -310,7 +311,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   if (image != null) {
                     Navigator.pop(context);
                     _easyImageEditorController
-                        .addBackgroundView(Image.file(File(image.path)));
+                        .addBackgroundView(
+                        kIsWeb
+                            ? Image.network(image.path)
+                            : Image.file(File(image.path)));
                   }
                 },
                 child: const Padding(
@@ -328,11 +332,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   if (image != null) {
                     Navigator.pop(context);
                     _easyImageEditorController.addView(
-                        Image.file(
-                          File(image.path),
-                          height: 200,
-                          width: 200,
-                        ),
+                      kIsWeb
+                          ? Image.network(image.path)
+                          : Image.file(File(image.path), height: 200, width: 200,),
                         widgetType: "image");
                   }
                 },
